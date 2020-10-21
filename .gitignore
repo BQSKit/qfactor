@@ -1,0 +1,3 @@
+*.qasm
+*.unitary
+*.egg-info
