@@ -1,13 +1,14 @@
-"""Optimize a random 3-qubit circuit to be a toffoli gate."""
+"""Optimize a 3-qubit circuit to be a toffoli gate."""
 
 import numpy as np
 from scipy.stats import unitary_group
 
 from qfactor import Gate, optimize
 
-import logging
-logging.getLogger( "qfactor" ).setLevel( logging.DEBUG )
 
+# Uncomment the next two lines for logging.
+# import logging
+# logging.getLogger( "qfactor" ).setLevel( logging.DEBUG )
 
 # We will optimize towards the toffoli unitary.
 toffoli = np.array( [ [ 1, 0, 0, 0, 0, 0, 0, 0 ],
@@ -44,4 +45,8 @@ ans = optimize( circuit, toffoli, # <--- These are the only required args
 # The result "ans" is another circuit object (list[Gate])
 # with the gate's unitaries changed from the input circuit.
 print( ans )
+
+# If you would like to convert the unitary operations to native gates,
+# you should use the KAK decomposition for 2 qubit unitaries, or
+# qsearch or qfast for 3+ qubit unitaries.
 
