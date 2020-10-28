@@ -3,7 +3,7 @@ import unittest as ut
 
 from scipy.stats import unitary_group
 
-from csvdopt.gate import Gate
+from qfactor.gate import Gate
 
 
 class TestGetInverse ( ut.TestCase ):

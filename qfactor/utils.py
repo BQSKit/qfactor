@@ -5,7 +5,7 @@ import logging
 import numpy as np
 
 
-logger = logging.getLogger( "csvdopt" )
+logger = logging.getLogger( "qfactor" )
 
 
 def get_num_qubits ( M ):

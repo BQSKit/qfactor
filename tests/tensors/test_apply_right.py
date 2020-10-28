@@ -3,8 +3,8 @@ import unittest as ut
 
 from scipy.stats import unitary_group
 
-from csvdopt.gate import Gate
-from csvdopt.tensors import CircuitTensor
+from qfactor.gate import Gate
+from qfactor.tensors import CircuitTensor
 
 
 class TestApplyRight ( ut.TestCase ):

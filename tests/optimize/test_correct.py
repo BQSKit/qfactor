@@ -3,7 +3,7 @@ import unittest as ut
 
 from scipy.stats import unitary_group
 
-from csvdopt.optimize import optimize, Gate
+from qfactor.optimize import optimize, Gate
 
 
 class TestOptimizeFixed ( ut.TestCase ):

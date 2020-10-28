@@ -1,7 +1,7 @@
 import numpy    as np
 import unittest as ut
 
-from csvdopt.utils import get_num_qubits
+from qfactor.utils import get_num_qubits
 
 
 class TestGetNumQubits ( ut.TestCase ):

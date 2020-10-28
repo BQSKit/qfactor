@@ -4,11 +4,11 @@ import logging
 
 import numpy as np
 
-from csvdopt import utils
-from csvdopt.gate import Gate
+from qfactor import utils
+from qfactor.gate import Gate
 
 
-logger = logging.getLogger( "csvdopt" )
+logger = logging.getLogger( "qfactor" )
 
 
 class CircuitTensor():
@@ -61,7 +61,7 @@ class CircuitTensor():
 
     def apply_right ( self, gate ):
         """
-        Apply the specified gate on the right on the circuit.
+        Apply the specified gate on the right of the circuit.
 
              .-----.   .------.
           0 -|     |---|      |-
@@ -80,16 +80,13 @@ class CircuitTensor():
             gate (Gate): The gate to apply.
         """
 
-        if not isinstance( gate, Gate ):
-            raise TypeError( "Invalid gate." )
-
-        left_perm = list( range( self.num_qubits ) )
-        mid_perm = [ x + self.num_qubits for x in left_perm if x not in gate.location ]
-        right_perm = [ x + self.num_qubits for x in gate.location ]
+        left_perm = list( gate.location )
+        mid_perm = [ x for x in range( self.num_qubits ) if x not in gate.location ]
+        right_perm = [ x + self.num_qubits for x in range( self.num_qubits ) ]
 
         perm = left_perm + mid_perm + right_perm
         self.tensor = self.tensor.transpose( perm )
-        self.tensor = self.tensor.reshape( ( 2 ** len( right_perm ), -1 ) )
+        self.tensor = self.tensor.reshape( ( 2 ** len( left_perm ), -1 ) )
         self.tensor = gate.utry @ self.tensor
 
         self.tensor = self.tensor.reshape( [2] * 2 * self.num_qubits )
@@ -99,7 +96,7 @@ class CircuitTensor():
 
     def apply_left ( self, gate ):
         """
-        Apply the specified gate on the left on the circuit.
+        Apply the specified gate on the left of the circuit.
 
              .------.   .-----.
           0 -|      |---|     |-
@@ -117,9 +114,6 @@ class CircuitTensor():
         Args:
             gate (Gate): The gate to apply.
         """
-
-        if not isinstance( gate, Gate ):
-            raise TypeError( "Invalid gate." )
 
         left_perm = list( range( self.num_qubits ) )
         mid_perm = [ x + self.num_qubits for x in left_perm if x not in gate.location ]
@@ -146,9 +140,6 @@ class CircuitTensor():
         Returns:
             (np.ndarray): The environmental matrix.
         """
-
-        if not utils.is_valid_location( location, self.num_qubits ):
-            raise TypeError( "Invalid location." )
 
         left_perm = list( range( self.num_qubits ) )
         left_perm = [ x for x in left_perm if x not in location ]

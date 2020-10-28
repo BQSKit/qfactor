@@ -3,35 +3,39 @@
 
 import numpy as np
 
-from csvdopt import utils
+from qfactor import utils
 
 
 class Gate():
     """A Gate is a unitary operation applied to a set of qubits."""
 
-    def __init__ ( self, utry, location, fixed = False ):
+    def __init__ ( self, utry, location, fixed = False, check_params = True ):
         """
         Gate Constructor
 
         Args:
-            utry (np.ndarray): The gate's unitary operation
+            utry (np.ndarray): The gate's unitary operation.
 
-            location (tuple[int]): Set of qubits this gate is applied to
+            location (tuple[int]): Set of qubits this gate is applied to.
 
-            fixed (bool): True if the gate's unitary operation is immutable
+            fixed (bool): True if the gate's unitary operation is immutable.
+
+            check_params (bool): True implies parameters are checked for
+                correctness.
         """
 
-        if not utils.is_unitary( utry ):
-            raise TypeError( "Specified matrix is not unitary." )
+        if check_params:
+            if not utils.is_unitary( utry ):
+                raise TypeError( "Specified matrix is not unitary." )
 
-        if not utils.is_valid_location( location ):
-            raise TypeError( "Specified location is not valid."  )
+            if not utils.is_valid_location( location ):
+                raise TypeError( "Specified location is not valid."  )
 
-        if len( location ) != utils.get_num_qubits( utry ):
-            raise ValueError( "Location size does not match unitary." )
+            if len( location ) != utils.get_num_qubits( utry ):
+                raise ValueError( "Location size does not match unitary." )
 
-        if not isinstance( fixed, bool ):
-            raise TypeError( "Invalid fixed parameter." )
+            if not isinstance( fixed, bool ):
+                raise TypeError( "Invalid fixed parameter." )
 
         self.utry = utry
         self.location = location
@@ -40,7 +44,7 @@ class Gate():
 
     def get_inverse ( self ):
         """Returns the inverse of this gate."""
-        return Gate( self.utry.conj().T, self.location, self.fixed )
+        return Gate( self.utry.conj().T, self.location, self.fixed, False )
 
     def get_tensor_format ( self, compress_left = False,
                             compress_right = False ):

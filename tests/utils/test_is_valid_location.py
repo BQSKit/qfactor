@@ -1,7 +1,7 @@
 import numpy    as np
 import unittest as ut
 
-from csvdopt.utils import is_valid_location
+from qfactor.utils import is_valid_location
 
 
 class TestIsValidLocation ( ut.TestCase ):

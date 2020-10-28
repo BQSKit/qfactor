@@ -4,19 +4,19 @@ import unittest as ut
 
 from scipy.stats import unitary_group
 
-from csvdopt.utils import is_unitary
+from qfactor.utils import is_unitary
 
 class TestIsUnitary ( ut.TestCase ):
     
     def test_is_unitary1 ( self ):
-        for i in range( 10 ):
+        for i in range( 1, 10 ):
             U = unitary_group.rvs( 2 * i )
             self.assertTrue( is_unitary( U, tol = 1e-14 ) )
 
     def test_is_unitary2 ( self ):
-        for i in range( 10 ):
+        for i in range( 1, 10 ):
             U = unitary_group.rvs( 2 * i )
-            U += 1e-13 * np.ones( 8 )
+            U += 1e-13 * np.ones( ( 2 * i, 2 * i ) )
             self.assertTrue( is_unitary( U, tol = 1e-12 ) )
    
     def test_is_unitary_invalid ( self ):

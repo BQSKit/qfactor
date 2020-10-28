@@ -1,7 +1,7 @@
 import numpy    as np
 import unittest as ut
 
-from csvdopt.gate import Gate
+from qfactor.gate import Gate
 
 class TestGateConstructor ( ut.TestCase ):
 

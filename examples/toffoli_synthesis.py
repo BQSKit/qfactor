@@ -1,31 +1,47 @@
 """Optimize a random 3-qubit circuit to be a toffoli gate."""
 
 import numpy as np
+from scipy.stats import unitary_group
 
-from csvdopt import Gate, optimize
+from qfactor import Gate, optimize
+
+import logging
+logging.getLogger( "qfactor" ).setLevel( logging.DEBUG )
 
 
-def gen_random_gate( gate_size, num_qubits ):
-    num_elems = 2 ** gate_size
-    X = np.random.random( (num_elems, num_elems) )
-    Y = np.random.random( (num_elems, num_elems) )
-    utry, _, _ = np.linalg.svd( X - 0.5 + 1j * (Y - 0.5) )
-    location = sorted( np.random.choice( range( num_qubits ),
-                                         gate_size,
-                                         replace = False ) )
-    location = tuple( [ int( x ) for x in location ] )
-    return Gate( utry, location )
+# We will optimize towards the toffoli unitary.
+toffoli = np.array( [ [ 1, 0, 0, 0, 0, 0, 0, 0 ],
+                      [ 0, 1, 0, 0, 0, 0, 0, 0 ],
+                      [ 0, 0, 1, 0, 0, 0, 0, 0 ],
+                      [ 0, 0, 0, 1, 0, 0, 0, 0 ],
+                      [ 0, 0, 0, 0, 1, 0, 0, 0 ],
+                      [ 0, 0, 0, 0, 0, 1, 0, 0 ],
+                      [ 0, 0, 0, 0, 0, 0, 0, 1 ],
+                      [ 0, 0, 0, 0, 0, 0, 1, 0 ] ] )
 
-utry_target = np.array( [ [ 1, 0, 0, 0, 0, 0, 0, 0 ],
-                          [ 0, 1, 0, 0, 0, 0, 0, 0 ],
-                          [ 0, 0, 1, 0, 0, 0, 0, 0 ],
-                          [ 0, 0, 0, 1, 0, 0, 0, 0 ],
-                          [ 0, 0, 0, 0, 1, 0, 0, 0 ],
-                          [ 0, 0, 0, 0, 0, 1, 0, 0 ],
-                          [ 0, 0, 0, 0, 0, 0, 0, 1 ],
-                          [ 0, 0, 0, 0, 0, 0, 1, 0 ] ] )
+# Start with the circuit structure
+# and an initial guess for the gate's unitaries.
+# Here we use randomly generated unitaries for initial guess.
+circuit = [ Gate( unitary_group.rvs(4), (1, 2) ),
+            Gate( unitary_group.rvs(4), (0, 2) ),
+            Gate( unitary_group.rvs(4), (1, 2) ),
+            Gate( unitary_group.rvs(4), (0, 2) ),
+            Gate( unitary_group.rvs(4), (0, 1) ) ]
 
-circuit = [ gen_random_gate( 2, 3 ) for i in range( 7 ) ]
+# Note: the Gate object also has an optional boolean parameter "fixed"
+# If "fixed" is set to true, that gate's unitary will not change.
 
-print( optimize( circuit, utry_target, 1e-12, 100000, 0 ) )
+# Call the optimize function
+ans = optimize( circuit, toffoli, # <--- These are the only required args
+                diff_tol = 1e-12,     # Stopping criteria for distance change
+                dist_tol = 1e-12,     # Stopping criteria for distance
+                max_iters = 100000,   # Maximum number of iterations
+                min_iters = 1000,     # Minimum number of iterations
+                slowdown_factor = 0 ) # Larger numbers slowdown optimization
+                                      # to avoid local minima
+
+
+# The result "ans" is another circuit object (list[Gate])
+# with the gate's unitaries changed from the input circuit.
+print( ans )
 

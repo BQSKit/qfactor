@@ -3,12 +3,12 @@ import unittest as ut
 
 from scipy.stats import unitary_group
 
-from csvdopt.utils import is_matrix
+from qfactor.utils import is_matrix
 
 class TestIsMatrix ( ut.TestCase ):
     
     def test_is_matrix1 ( self ):
-        for i in range( 10 ):
+        for i in range( 1, 10 ):
             self.assertTrue( is_matrix( unitary_group.rvs( 2 * i ) ) )
    
     def test_is_matrix2 ( self ):

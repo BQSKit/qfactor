@@ -1,5 +1,5 @@
 """
-Circuit SVD Optimizer
+Quantum Fast Circuit Optimizer (qFactor)
 
 This package provides functions to optimize the unitaries in a circuit
 with respect to some target unitary matrix.
@@ -7,7 +7,7 @@ with respect to some target unitary matrix.
 
 # Initialize Logging
 import logging
-_logger = logging.getLogger( "csvdopt" )
+_logger = logging.getLogger( "qfactor" )
 _logger.setLevel(logging.CRITICAL)
 _handler = logging.StreamHandler()
 _handler.setLevel( logging.DEBUG )

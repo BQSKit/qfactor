@@ -16,9 +16,9 @@ with open( req_path ) as f:
     requirements = f.read().split( '\n' )
     requirements.remove( '' )
 
-setup( name = "csvdopt",
+setup( name = "qfactor",
        version = "1.0.0",
-       description = "Circuit SVD Optimizer",
+       description = "Quantum Fast Circuit Optimizer",
        long_description = long_description,
        long_description_content_type = "text/markdown",
        url = "https://github.com/edyounis/csvdopt",
