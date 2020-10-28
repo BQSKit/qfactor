@@ -6,9 +6,9 @@ from scipy.stats import unitary_group
 from qfactor import Gate, optimize
 
 
-# Uncomment the next two lines for logging.
-# import logging
-# logging.getLogger( "qfactor" ).setLevel( logging.DEBUG )
+# The next two lines start qfactor's logger.
+import logging
+logging.getLogger( "qfactor" ).setLevel( logging.DEBUG )
 
 # We will optimize towards the toffoli unitary.
 toffoli = np.array( [ [ 1, 0, 0, 0, 0, 0, 0, 0 ],
