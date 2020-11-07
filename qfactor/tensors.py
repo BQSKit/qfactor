@@ -5,7 +5,7 @@ import logging
 import numpy as np
 
 from qfactor import utils
-from qfactor.gate import Gate
+from qfactor.gates import Gate
 
 
 logger = logging.getLogger( "qfactor" )
@@ -59,7 +59,7 @@ class CircuitTensor():
         num_elems = 2 ** self.num_qubits
         return self.tensor.reshape( ( num_elems, num_elems ) )
 
-    def apply_right ( self, gate ):
+    def apply_right ( self, gate, inverse = False ):
         """
         Apply the specified gate on the right of the circuit.
 
@@ -78,23 +78,27 @@ class CircuitTensor():
 
         Args:
             gate (Gate): The gate to apply.
+
+            inverse (bool): If true, apply the inverse of gate.
         """
 
         left_perm = list( gate.location )
         mid_perm = [ x for x in range( self.num_qubits ) if x not in gate.location ]
         right_perm = [ x + self.num_qubits for x in range( self.num_qubits ) ]
 
+        utry = gate.utry.conj().T if inverse else gate.utry
+
         perm = left_perm + mid_perm + right_perm
         self.tensor = self.tensor.transpose( perm )
         self.tensor = self.tensor.reshape( ( 2 ** len( left_perm ), -1 ) )
-        self.tensor = gate.utry @ self.tensor
+        self.tensor = utry @ self.tensor
 
         self.tensor = self.tensor.reshape( [2] * 2 * self.num_qubits )
         inv_perm = np.argsort( perm )
         self.tensor = self.tensor.transpose( inv_perm )
 
 
-    def apply_left ( self, gate ):
+    def apply_left ( self, gate, inverse = False ):
         """
         Apply the specified gate on the left of the circuit.
 
@@ -113,16 +117,20 @@ class CircuitTensor():
 
         Args:
             gate (Gate): The gate to apply.
+
+            inverse (bool): If true, apply the inverse of gate.
         """
 
         left_perm = list( range( self.num_qubits ) )
         mid_perm = [ x + self.num_qubits for x in left_perm if x not in gate.location ]
         right_perm = [ x + self.num_qubits for x in gate.location ]
 
+        utry = gate.utry.conj().T if inverse else gate.utry
+
         perm = left_perm + mid_perm + right_perm
         self.tensor = self.tensor.transpose( perm )
         self.tensor = self.tensor.reshape( ( -1, 2 ** len( right_perm ) ) )
-        self.tensor = self.tensor @ gate.utry
+        self.tensor = self.tensor @ utry
 
         self.tensor = self.tensor.reshape( [2] * 2 * self.num_qubits )
         inv_perm = np.argsort( perm )

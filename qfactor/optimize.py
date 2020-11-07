@@ -3,10 +3,9 @@
 import logging
 
 import numpy as np
-import scipy.linalg as la
 
 from qfactor import utils
-from qfactor.gate import Gate
+from qfactor.gates import Gate
 from qfactor.tensors import CircuitTensor
 
 
@@ -78,15 +77,12 @@ def optimize ( circuit, target, diff_tol = 1e-10, dist_tol = 1e-10,
             rk = len( circuit ) - 1 - k
 
             # Remove current gate from right of circuit tensor
-            inv_gate = circuit[rk].get_inverse()
-            ct.apply_right( inv_gate )
+            ct.apply_right( circuit[rk], inverse = True )
 
             # Update current gate
             if not circuit[rk].fixed:
                 env = ct.calc_env_matrix( circuit[rk].location )
-                u, _, v = la.svd( env + slowdown_factor * inv_gate.utry )
-                circuit[rk] = Gate( v.conj().T @ u.conj().T, circuit[rk].location,
-                                    False, False )
+                circuit[rk].update( env, slowdown_factor )
 
             # Add updated gate to left of circuit tensor
             ct.apply_left( circuit[rk] )
@@ -95,15 +91,12 @@ def optimize ( circuit, target, diff_tol = 1e-10, dist_tol = 1e-10,
         for k in range( len( circuit ) ):
 
             # Remove current gate from left of circuit tensor
-            inv_gate = circuit[k].get_inverse()
-            ct.apply_left( inv_gate )
+            ct.apply_left( circuit[k], inverse = True )
 
             # Update current gate
             if not circuit[k].fixed:
                 env = ct.calc_env_matrix( circuit[k].location )
-                u, _, v = la.svd( env + slowdown_factor * inv_gate.utry )
-                circuit[k] = Gate( v.conj().T @ u.conj().T, circuit[k].location,
-                                    False, False )
+                circuit[k].update( env, slowdown_factor )
 
             # Add updated gate to right of circuit tensor
             ct.apply_right( circuit[k] )

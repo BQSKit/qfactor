@@ -17,6 +17,6 @@ _handler.setFormatter( _formatter )
 _logger.addHandler( _handler )
 
 # Main API
-from .gate import Gate
+from .gates import Gate, RxGate, RyGate, RzGate, CnotGate
 from .optimize import optimize
 

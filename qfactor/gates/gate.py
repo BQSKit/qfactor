@@ -2,6 +2,7 @@
 
 
 import numpy as np
+import scipy.linalg as la
 
 from qfactor import utils
 
@@ -45,6 +46,23 @@ class Gate():
     def get_inverse ( self ):
         """Returns the inverse of this gate."""
         return Gate( self.utry.conj().T, self.location, self.fixed, False )
+
+    def update ( self, env, slowdown_factor ):
+        """
+        Update this gate with respect to an enviroment.
+
+        This method updates this gate's unitary to maximize:
+            Re( Tr( env * self.utry ) )
+
+        Args:
+            env (np.ndarray): The enviromental matrix.
+
+            slowdown_factor (int): The larger this factor, the slower
+                the optimization happens.
+        """
+
+        u, _, v = la.svd( env + slowdown_factor * self.utry.conj().T )
+        self.utry = v.conj().T @ u.conj().T
 
     def get_tensor_format ( self, compress_left = False,
                             compress_right = False ):
