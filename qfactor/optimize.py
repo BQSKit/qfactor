@@ -12,8 +12,9 @@ from qfactor.tensors import CircuitTensor
 logger = logging.getLogger( "qfactor" )
 
 
-def optimize ( circuit, target, diff_tol = 1e-10, dist_tol = 1e-10,
-               max_iters = 100000, min_iters = 1000, slowdown_factor = 0 ):
+def optimize ( circuit, target, diff_tol_a = 1e-12, diff_tol_r = 1e-6,
+               dist_tol = 1e-10, max_iters = 100000, min_iters = 1000,
+               slowdown_factor = 0 ):
     """
     Optimize distance between circuit and target unitary.
 
@@ -22,8 +23,12 @@ def optimize ( circuit, target, diff_tol = 1e-10, dist_tol = 1e-10,
 
         target (np.ndarray): The target unitary matrix.
 
-        diff_tol (float): Terminate when the difference in distance
+        diff_tol_a (float): Terminate when the difference in distance
             between iterations is less than this threshold.
+       
+       diff_tol_r (float): Terminate when the relative difference in
+            distance between iterations is iless than this threshold:
+                |c1 - c2| <= diff_tol_a + diff_tol_r * abs( c1 )
 
         dist_tol (float): Terminate when the distance is less than
             this threshold.
@@ -48,8 +53,11 @@ def optimize ( circuit, target, diff_tol = 1e-10, dist_tol = 1e-10,
     if not utils.is_unitary( target ):
         raise TypeError( "The target matrix is not unitary." )
 
-    if not isinstance( diff_tol, float ) or diff_tol > 0.5:
-        raise TypeError( "Invalid difference threshold." )
+    if not isinstance( diff_tol_a, float ) or diff_tol_a > 0.5:
+        raise TypeError( "Invalid absolute difference threshold." )
+
+    if not isinstance( diff_tol_r, float ) or diff_tol_r > 0.5:
+        raise TypeError( "Invalid relative difference threshold." )
 
     if not isinstance( dist_tol, float ) or dist_tol > 0.5:
         raise TypeError( "Invalid distance threshold." )
@@ -69,7 +77,21 @@ def optimize ( circuit, target, diff_tol = 1e-10, dist_tol = 1e-10,
     c2 = 1
     it = 0
 
-    while it < min_iters or np.abs(c1 - c2) > diff_tol and it < max_iters:
+    while True:
+
+        # Termination conditions
+        if it > min_iters:
+
+            if np.abs(c1 - c2) <= diff_tol_a + diff_tol_r * np.abs( c1 ):
+                diff = np.abs(c1 - c2)
+                logger.info( f"Terminated: |c1 - c2| = {diff}"
+                              " <= diff_tol_a + diff_tol_r * |c1|." )
+                break;
+
+            if it > max_iters:
+                logger.info( "Terminated: iteration limit reached." )
+                break;
+
         it += 1
 
         # from right to left
@@ -106,7 +128,7 @@ def optimize ( circuit, target, diff_tol = 1e-10, dist_tol = 1e-10,
         c1 = 1 - ( c1 / ( 2 ** ct.num_qubits ) )
 
         if c1 <= dist_tol:
-            logger.info( f"Terminated c1 = {c1} <= dist_tol." )
+            logger.info( f"Terminated: c1 = {c1} <= dist_tol." )
             return circuit
 
         if it % 100 == 0:
@@ -115,12 +137,23 @@ def optimize ( circuit, target, diff_tol = 1e-10, dist_tol = 1e-10,
         if it % 40 == 0:
             ct.reinitialize()
 
-    if it >= max_iters:
-        logger.info( "Iteration limit reached." )
-
-    if np.abs(c1 - c2) <= diff_tol:
-        diff = np.abs(c1 - c2)
-        logger.info( f"Terminated |c1 - c2| = {diff} <= diff_tol." )
-
     return circuit
+
+
+def get_distance ( circuit, target ):
+    """
+    Returns the distance between the circuit and the unitary target.
+
+    Args:
+        circuit (list[Gate]): The circuit.
+
+        target (np.ndarray): The unitary target.
+    
+    Returns:
+        (float): The distance between the circuit and unitary target.
+    """
+
+    ct = CircuitTensor( target, circuit )
+    num_qubits = utils.get_num_qubits( target )
+    return 1 - ( np.real( np.trace( ct.utry ) ) / ( 2 ** num_qubits ) )
 

@@ -3,12 +3,12 @@
 import numpy as np
 from scipy.stats import unitary_group
 
-from qfactor import Gate, optimize
+from qfactor import Gate, optimize, get_distance
 
 
 # The next two lines start qfactor's logger.
 import logging
-logging.getLogger( "qfactor" ).setLevel( logging.DEBUG )
+logging.getLogger( "qfactor" ).setLevel( logging.INFO )
 
 # We will optimize towards the toffoli unitary.
 toffoli = np.array( [ [ 1, 0, 0, 0, 0, 0, 0, 0 ],
@@ -34,7 +34,8 @@ circuit = [ Gate( unitary_group.rvs(4), (1, 2) ),
 
 # Call the optimize function
 ans = optimize( circuit, toffoli, # <--- These are the only required args
-                diff_tol = 1e-12,     # Stopping criteria for distance change
+                diff_tol_a = 1e-12,   # Stopping criteria for distance change
+                diff_tol_r = 1e-6,    # Relative criteria for distance change
                 dist_tol = 1e-12,     # Stopping criteria for distance
                 max_iters = 100000,   # Maximum number of iterations
                 min_iters = 1000,     # Minimum number of iterations
@@ -44,7 +45,8 @@ ans = optimize( circuit, toffoli, # <--- These are the only required args
 
 # The result "ans" is another circuit object (list[Gate])
 # with the gate's unitaries changed from the input circuit.
-print( ans )
+print( "Circuit: ", ans )
+print( "Final Distance: ", get_distance( ans, toffoli ) )
 
 # If you would like to convert the unitary operations to native gates,
 # you should use the KAK decomposition for 2 qubit unitaries, or

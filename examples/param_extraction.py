@@ -12,7 +12,7 @@ from qfactor import Gate, optimize, CnotGate, RzGate
 
 # The next two lines start qfactor's logger.
 import logging
-logging.getLogger( "qfactor" ).setLevel( logging.DEBUG )
+logging.getLogger( "qfactor" ).setLevel( logging.INFO )
 
 # We will optimize towards the toffoli unitary.
 toffoli = np.array( [ [ 1, 0, 0, 0, 0, 0, 0, 0 ],
@@ -50,7 +50,8 @@ circuit = [ Gate( H, (2,), fixed = True ),
 
 # Call the optimize function
 ans = optimize( circuit, toffoli, # <--- These are the only required args
-                diff_tol = 1e-12,     # Stopping criteria for distance change
+                diff_tol_a = 1e-12,   # Stopping criteria for distance change
+                diff_tol_r = 1e-6,    # Relative criteria for distance change
                 dist_tol = 1e-12,     # Stopping criteria for distance
                 max_iters = 100000,   # Maximum number of iterations
                 min_iters = 1000,     # Minimum number of iterations

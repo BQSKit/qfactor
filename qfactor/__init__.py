@@ -18,5 +18,5 @@ _logger.addHandler( _handler )
 
 # Main API
 from .gates import Gate, RxGate, RyGate, RzGate, CnotGate
-from .optimize import optimize
+from .optimize import optimize, get_distance
 
