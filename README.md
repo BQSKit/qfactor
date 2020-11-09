@@ -9,7 +9,9 @@ method based on the SVD operation.
 The best way to install this python package is with pip.
 
 ```
-pip install qfactor
+git clone git@github.com:edyounis/qfactor.git
+cd qfactor
+pip install .
 ```
 
 ## Usage
