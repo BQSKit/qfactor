@@ -1,7 +1,7 @@
 import numpy    as np
 import unittest as ut
 
-from qfactor.gate import Gate
+from qfactor.gates import Gate
 from qfactor.tensors import CircuitTensor
 
 class TestCircuitTensorConstructor ( ut.TestCase ):

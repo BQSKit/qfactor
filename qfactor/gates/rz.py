@@ -17,7 +17,7 @@ class RzGate ( Gate ):
         Args:
             theta (float): The gate's angle of rotation.
 
-            location (int): The qubit this gate is applied to.
+            location (int or tuple[int]): The qubit this gate is applied to.
 
             fixed (bool): True if the gate's unitary operation is immutable.
 
@@ -33,6 +33,8 @@ class RzGate ( Gate ):
                 if ( not utils.is_valid_location( location )
                      or len( location ) != 1 ):
                     raise TypeError( "Specified location is not valid."  )
+            elif location < 0:
+                raise ValueError( "Invalid location value." )
 
             if not isinstance( fixed, bool ):
                 raise TypeError( "Invalid fixed parameter." )
@@ -69,7 +71,14 @@ class RzGate ( Gate ):
 
         a = np.real( env[1, 1] )
         b = np.imag( env[1, 1] )
-        self.theta = -np.arctan( b / a )
+        arctan = np.arctan( b / a )
+
+        if a < 0 and b > 0:
+            arctan += np.pi
+        elif a < 0 and b < 0:
+            arctan -= np.pi
+
+        self.theta = -arctan
 
     def __repr__ ( self ):
         """Gets a simple gate string representation."""

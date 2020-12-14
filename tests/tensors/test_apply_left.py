@@ -3,7 +3,7 @@ import unittest as ut
 
 from scipy.stats import unitary_group
 
-from qfactor.gate import Gate
+from qfactor.gates import Gate
 from qfactor.tensors import CircuitTensor
 
 
@@ -16,7 +16,7 @@ class TestApplyLeft ( ut.TestCase ):
         ct = CircuitTensor( u1, [] )
 
         ct.apply_left( g )
-        prod = u1 @ np.kron( u2, np.identity( 2 ) )
+        prod = u1.conj().T @ np.kron( u2, np.identity( 2 ) )
         prod_test = ct.utry
         self.assertTrue( np.allclose( prod, prod_test ) )
 
@@ -28,7 +28,7 @@ class TestApplyLeft ( ut.TestCase ):
     def test_apply_left_invalid ( self ):
         u1 = unitary_group.rvs( 8 )
         ct = CircuitTensor( u1, [] )
-        self.assertRaises( TypeError, ct.apply_left, "a" )
+        self.assertRaises( Exception, ct.apply_left, "a" )
 
 
 if __name__ == "__main__":

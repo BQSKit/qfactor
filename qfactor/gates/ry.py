@@ -17,7 +17,7 @@ class RyGate ( Gate ):
         Args:
             theta (float): The gate's angle of rotation.
 
-            location (int): The qubit this gate is applied to.
+            location (int or tuple[int]): The qubit this gate is applied to.
 
             fixed (bool): True if the gate's unitary operation is immutable.
 
@@ -33,6 +33,8 @@ class RyGate ( Gate ):
                 if ( not utils.is_valid_location( location )
                      or len( location ) != 1 ):
                     raise TypeError( "Specified location is not valid."  )
+            elif location < 0:
+                raise ValueError( "Invalid location value." )
 
             if not isinstance( fixed, bool ):
                 raise TypeError( "Invalid fixed parameter." )
@@ -72,6 +74,7 @@ class RyGate ( Gate ):
         a = np.real( env[0, 0] + env[1, 1] )
         b = np.real( env[1, 0] - env[0, 1] )
         self.theta = 2 * np.arccos( a / np.sqrt( a ** 2 + b ** 2 ) )
+        self.theta *= -1 if b > 0 else 1
 
     def __repr__ ( self ):
         """Gets a simple gate string representation."""

@@ -7,6 +7,7 @@ import numpy as np
 from qfactor import utils
 from qfactor.gates import Gate
 
+from qfast.pauli import pauli_expansion, unitary_log_no_i
 
 logger = logging.getLogger( "qfactor" )
 
@@ -57,7 +58,10 @@ class CircuitTensor():
     def utry ( self ):
         """Calculates this circuit tensor's unitary representation."""
         num_elems = 2 ** self.num_qubits
-        return self.tensor.reshape( ( num_elems, num_elems ) )
+        utry = self.tensor.reshape( ( num_elems, num_elems ) )
+        # paulis = pauli_expansion( unitary_log_no_i( utry, tol = 1e-12 ) )
+        # print( paulis[0] )
+        return utry
 
     def apply_right ( self, gate, inverse = False ):
         """

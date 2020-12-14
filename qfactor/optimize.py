@@ -124,7 +124,7 @@ def optimize ( circuit, target, diff_tol_a = 1e-12, diff_tol_r = 1e-6,
             ct.apply_right( circuit[k] )
 
         c2 = c1
-        c1 = np.real( np.trace( ct.utry ) )
+        c1 = np.abs( np.trace( ct.utry ) )
         c1 = 1 - ( c1 / ( 2 ** ct.num_qubits ) )
 
         if c1 <= dist_tol:
@@ -155,5 +155,5 @@ def get_distance ( circuit, target ):
 
     ct = CircuitTensor( target, circuit )
     num_qubits = utils.get_num_qubits( target )
-    return 1 - ( np.real( np.trace( ct.utry ) ) / ( 2 ** num_qubits ) )
+    return 1 - ( np.abs( np.trace( ct.utry ) ) / ( 2 ** num_qubits ) )
 

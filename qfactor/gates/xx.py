@@ -29,7 +29,13 @@ class XXGate ( Gate ):
             if not isinstance( theta, float ):
                 raise TypeError( "Invalid theta angle, not a float." )
 
+            if not isinstance( location, tuple ):
+                raise TypeError( "Specified location is not valid."  )
+
             if not utils.is_valid_location( location ):
+                raise TypeError( "Specified location is not valid."  )
+
+            if len( location ) != 2:
                 raise TypeError( "Specified location is not valid."  )
 
             if not isinstance( fixed, bool ):
@@ -69,6 +75,7 @@ class XXGate ( Gate ):
         a = np.real( env[0, 0] + env[1, 1] + env[2, 2] + env[3, 3] )
         b = np.imag( env[0, 3] + env[1, 2] + env[2, 1] + env[3, 0] )
         self.theta = np.arccos( a / np.sqrt( a ** 2 + b ** 2 ) )
+        self.theta *= -2 if b < 0 else 2
 
     def __repr__ ( self ):
         """Gets a simple gate string representation."""
