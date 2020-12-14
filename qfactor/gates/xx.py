@@ -65,8 +65,8 @@ class XXGate ( Gate ):
         Args:
             env (np.ndarray): The enviromental matrix.
 
-            slowdown_factor (int): The larger this factor, the slower
-                the optimization happens.
+            slowdown_factor (float): A positive number less than 1. 
+                The larger this factor, the slower the optimization.
         """
 
         if self.fixed:
@@ -74,8 +74,10 @@ class XXGate ( Gate ):
 
         a = np.real( env[0, 0] + env[1, 1] + env[2, 2] + env[3, 3] )
         b = np.imag( env[0, 3] + env[1, 2] + env[2, 1] + env[3, 0] )
-        self.theta = np.arccos( a / np.sqrt( a ** 2 + b ** 2 ) )
-        self.theta *= -2 if b < 0 else 2
+        new_theta = np.arccos( a / np.sqrt( a ** 2 + b ** 2 ) )
+        new_theta *= -2 if b < 0 else 2
+        self.theta = ( ( 1 - slowdown_factor ) * new_theta
+                       + slowdown_factor * self.theta )
 
     def __repr__ ( self ):
         """Gets a simple gate string representation."""

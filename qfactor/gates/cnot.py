@@ -47,8 +47,8 @@ class CnotGate ( Gate ):
         Args:
             env (np.ndarray): The enviromental matrix.
 
-            slowdown_factor (int): The larger this factor, the slower
-                the optimization happens.
+            slowdown_factor (float): A positive number less than 1. 
+                The larger this factor, the slower the optimization.
         """
         return
 

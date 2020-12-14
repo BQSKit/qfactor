@@ -62,8 +62,8 @@ class RzGate ( Gate ):
         Args:
             env (np.ndarray): The enviromental matrix.
 
-            slowdown_factor (int): The larger this factor, the slower
-                the optimization happens.
+            slowdown_factor (float): A positive number less than 1. 
+                The larger this factor, the slower the optimization.
         """
 
         if self.fixed:
@@ -78,7 +78,9 @@ class RzGate ( Gate ):
         elif a < 0 and b < 0:
             arctan -= np.pi
 
-        self.theta = -arctan
+        new_theta = -arctan
+        self.theta = ( ( 1 - slowdown_factor ) * new_theta
+                       + slowdown_factor * self.theta )
 
     def __repr__ ( self ):
         """Gets a simple gate string representation."""

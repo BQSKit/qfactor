@@ -14,7 +14,7 @@ logger = logging.getLogger( "qfactor" )
 
 def optimize ( circuit, target, diff_tol_a = 1e-12, diff_tol_r = 1e-6,
                dist_tol = 1e-10, max_iters = 100000, min_iters = 1000,
-               slowdown_factor = 0 ):
+               slowdown_factor = 0.0 ):
     """
     Optimize distance between circuit and target unitary.
 
@@ -37,8 +37,8 @@ def optimize ( circuit, target, diff_tol_a = 1e-12, diff_tol_r = 1e-6,
 
         min_iters (int): Minimum number of iterations.
 
-        slowdown_factor (int): The larger this factor, the slower the
-            optimization happens.
+        slowdown_factor (float): A positive number less than 1. 
+            The larger this factor, the slower the optimization.
 
     Returns:
         (list[Gate]): The optimized circuit.
@@ -68,8 +68,11 @@ def optimize ( circuit, target, diff_tol_a = 1e-12, diff_tol_r = 1e-6,
     if not isinstance( min_iters, int ) or min_iters < 0:
         raise TypeError( "Invalid minimum number of iterations." )
 
-    if not isinstance( slowdown_factor, int ) or slowdown_factor < 0:
-        raise TypeError( "Invalid slowdown factor." )
+    if not isinstance( slowdown_factor, float ):
+        raise TypeError( "Slowdown factor is a positive number less than 1." )
+
+    if slowdown_factor < 0 or slowdown_factor >= 1:
+        raise TypeError( "Slowdown factor is a positive number less than 1." )
 
     ct = CircuitTensor( target, circuit )
 

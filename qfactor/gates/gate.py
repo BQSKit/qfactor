@@ -57,11 +57,12 @@ class Gate():
         Args:
             env (np.ndarray): The enviromental matrix.
 
-            slowdown_factor (int): The larger this factor, the slower
-                the optimization happens.
+            slowdown_factor (float): A positive number less than 1. 
+                The larger this factor, the slower the optimization.
         """
 
-        u, _, v = la.svd( env + slowdown_factor * self.utry.conj().T )
+        u, _, v = la.svd( ( 1 - slowdown_factor ) * env
+                          + slowdown_factor * self.utry.conj().T )
         self.utry = v.conj().T @ u.conj().T
 
     def get_tensor_format ( self, compress_left = False,
