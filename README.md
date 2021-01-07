@@ -1,4 +1,4 @@
-# Quantum Fast Circuit Optimizer (qFactor)
+# Quantum Fast Circuit Optimizer (QFactor)
 
 This optimizer can optimize the distance between a circuit, a sequence of
 unitary gates, and a target unitary matrix. This optimizer uses an analytic
