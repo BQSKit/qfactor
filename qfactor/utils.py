@@ -81,7 +81,7 @@ def is_square_matrix ( M ):
     return True
 
 
-def is_unitary ( U, tol = 1e-14 ):
+def is_unitary ( U, tol = 1e-12 ):
     """Checks if U is a unitary matrix."""
 
     if not is_square_matrix( U ):
