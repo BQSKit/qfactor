@@ -1,4 +1,4 @@
-# Quantum Fast Circuit Optimizer (QFactor)
+# Quantum Fast Circuit Optimizer (Qfactor)
 
 This optimizer can optimize the distance between a circuit, a sequence of
 unitary gates, and a target unitary matrix. This optimizer uses an analytic
@@ -16,7 +16,7 @@ pip install qfactor
 
 The qfactor package can be used to optimize a specified circuit.
 You can specify your circuit with a list of Gate objects and pass them to
-the optimize function. See [an example](https://github.com/edyounis/csvdopt/blob/master/examples/toffoli_synthesis.py).
+the optimize function. See [an example](https://github.com/edyounis/qfactor/blob/master/examples/toffoli_synthesis.py).
 
 ## Copyright
 
