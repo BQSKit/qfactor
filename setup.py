@@ -17,11 +17,11 @@ with open( req_path ) as f:
     requirements.remove( '' )
 
 setup( name = "qfactor",
-       version = "1.0.0",
+       version = "1.0.1",
        description = "Quantum Fast Circuit Optimizer",
        long_description = long_description,
        long_description_content_type = "text/markdown",
-       url = "https://github.com/edyounis/csvdopt",
+       url = "https://github.com/edyounis/qfactor",
        author = "Ed Younis",
        author_email = "edyounis@lbl.gov",
        classifiers = [
@@ -41,8 +41,8 @@ setup( name = "qfactor",
        ],
        keywords = "quantum circuit optimization optimizer",
        project_urls = {
-           "Bug Tracker": "https://github.com/edyounis/csvdopt/issues",
-           "Source Code": "https://github.com/edyounis/csvdopt"
+           "Bug Tracker": "https://github.com/edyounis/qfactor/issues",
+           "Source Code": "https://github.com/edyounis/qfactor"
        },
        packages = find_namespace_packages( exclude = [ "tests*",
                                                        "examples*" ] ),
