@@ -7,8 +7,6 @@ import numpy as np
 from qfactor import utils
 from qfactor.gates import Gate
 
-from qfast.pauli import pauli_expansion, unitary_log_no_i
-
 logger = logging.getLogger( "qfactor" )
 
 
