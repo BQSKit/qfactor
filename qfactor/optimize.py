@@ -68,9 +68,6 @@ def optimize ( circuit, target, diff_tol_a = 1e-12, diff_tol_r = 1e-6,
     if not isinstance( min_iters, int ) or min_iters < 0:
         raise TypeError( "Invalid minimum number of iterations." )
 
-    if not isinstance( slowdown_factor, [float, int] ):
-        raise TypeError( "Slowdown factor is a positive number less than 1." )
-
     if slowdown_factor < 0 or slowdown_factor >= 1:
         raise TypeError( "Slowdown factor is a positive number less than 1." )
 
