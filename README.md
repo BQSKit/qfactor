@@ -1,3 +1,8 @@
+Deprecation
+
+This qfactor package is a python prototype and is no longer being actively maintained. Qfactor has been ported to rust and
+is made available in the [bqskitrs](https://github.com/BQSKit/bqskitrs) from both python and rust. It can also be called directly from [BQSKit](https://github.com/BQSKit/bqskitrs).
+
 # Quantum Fast Circuit Optimizer (Qfactor)
 
 This optimizer can optimize the distance between a circuit, a sequence of
